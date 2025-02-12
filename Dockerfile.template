@@ -196,6 +196,20 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 {{ if env.version == "2.2" then ( -}}
 # no USER for backwards compatibility (to try to avoid breaking existing users)
 {{ ) else ( -}}
+
+{{ if env.variant != "alpine" then ( -}}
+# Crowdsec Bouncer install
+RUN set -eux; \
+    apt-get update && \
+    apt-get install -y curl gnupg2 apt-transport-https ca-certificates lsb-release software-properties-common; \
+    curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash; \
+    apt-get update && apt-get install -y crowdsec-haproxy-bouncer; \
+    apt-get clean && rm -rf /var/lib/apt/lists/*;
+{{ ) else ( -}}
+# Alpine does not support the direct installation of CrowdSec.
+RUN echo "CrowdSec Bouncer is not supported on Alpine."
+{{ ) end -}}
+
 USER haproxy
 {{ ) end -}}
 
@@ -206,19 +220,6 @@ USER haproxy
 WORKDIR /var/lib/haproxy
 {{ ) end -}}
 
-# Crowdsec Bouncer install
-
-{{ if env.variant != "alpine" then ( -}}
-# Crowdsec Bouncer install pour Debian
-RUN apt-get update && \
-    apt-get install -y curl gnupg && \
-    curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash && \
-    apt-get install -y crowdsec-haproxy-bouncer && \
-    apt-get clean
-{{ ) else ( -}}
-# Alpine ne supporte pas l'installation de CrowdSec directement
-RUN echo "CrowdSec Bouncer non supporté sur Alpine."
-{{ ) end -}}
 
 
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]

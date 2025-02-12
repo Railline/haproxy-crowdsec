@@ -99,4 +99,10 @@ USER haproxy
 
 # no WORKDIR for backwards compatibility (to try to avoid breaking existing users)
 
+# Crowdsec Bouncer install
+
+# Alpine ne supporte pas l'installation de CrowdSec directement
+RUN echo "CrowdSec Bouncer non supporté sur Alpine."
+
+
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]

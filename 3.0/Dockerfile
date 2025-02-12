@@ -108,4 +108,14 @@ USER haproxy
 # https://github.com/docker-library/haproxy/issues/200
 WORKDIR /var/lib/haproxy
 
+# Crowdsec Bouncer install
+
+# Crowdsec Bouncer install pour Debian
+RUN apt-get update && \
+    apt-get install -y curl gnupg && \
+    curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash && \
+    apt-get install -y crowdsec-haproxy-bouncer && \
+    apt-get clean
+
+
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]

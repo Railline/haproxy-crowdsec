@@ -100,4 +100,10 @@ USER haproxy
 # https://github.com/docker-library/haproxy/issues/200
 WORKDIR /var/lib/haproxy
 
+# Crowdsec Bouncer install
+
+# Alpine ne supporte pas l'installation de CrowdSec directement
+RUN echo "CrowdSec Bouncer non supporté sur Alpine."
+
+
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]

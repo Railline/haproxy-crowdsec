@@ -206,4 +206,19 @@ USER haproxy
 WORKDIR /var/lib/haproxy
 {{ ) end -}}
 
+# Crowdsec Bouncer install
+
+{{ if env.variant != "alpine" then ( -}}
+# Crowdsec Bouncer install pour Debian
+RUN apt-get update && \
+    apt-get install -y curl gnupg && \
+    curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash && \
+    apt-get install -y crowdsec-haproxy-bouncer && \
+    apt-get clean
+{{ ) else ( -}}
+# Alpine ne supporte pas l'installation de CrowdSec directement
+RUN echo "CrowdSec Bouncer non supporté sur Alpine."
+{{ ) end -}}
+
+
 CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]

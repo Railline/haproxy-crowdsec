@@ -109,8 +109,10 @@ RUN set -eux; \
     apt-get update && \
     apt-get install -y curl gnupg2 apt-transport-https ca-certificates lsb-release software-properties-common; \
     curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | bash; \
-    apt-get update && apt-get install -y crowdsec-haproxy-bouncer; \
+    apt-get update && apt-get install -y crowdsec-haproxy-bouncer lua5.4 liblua5.4-dev lua-json; \
     apt-get clean && rm -rf /var/lib/apt/lists/*;
+ENV LUA_PATH="/usr/lib/crowdsec/lua/haproxy/?.lua;/usr/share/lua/5.3/?.lua;/usr/share/lua/5.2/?.lua;/usr/share/lua/5.1/?.lua;;"
+
 
 USER haproxy
 
